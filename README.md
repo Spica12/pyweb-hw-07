@@ -1,5 +1,14 @@
 ## Python WEB Homework-07 "ORM SQLAlchemy"
 
+## Виконання
+1) Запуск Docker контейнера:
+
+```
+docker run --name pyweb-hw-07 -p 5432:5432 -e POSTGRES_PASSWORD=pass -d postgres
+
+```
+
+
 ## Завдання
 
 1) Запустити Docker контейнер, де замість ```some-postgres```та ```mysecretpassword``` придумати свою назву контейнера та пароль до БД:
