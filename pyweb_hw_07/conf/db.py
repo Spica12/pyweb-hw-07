@@ -10,16 +10,32 @@ from sqlalchemy.orm import sessionmaker
 
 
 def create_database(domain, port, user, password, db):
-    # Connect to PostgresSQL DBMS
-    con = psycopg2.connect(host=domain, port=port, user=user, password=password)
-    con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    try:
+        # Connect to PostgresSQL DBMS
+        con = psycopg2.connect(host=domain, port=port, user=user, password=password)
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 
-    # Obtain a DB Cursor
-    cursor = con.cursor()
+        # Obtain a DB Cursor
+        cursor = con.cursor()
 
-    # Create table statement
-    sql_create_database = f"CREATE DATABASE {db}"
-    cursor.execute(sql_create_database)
+        # Check id database exists
+        cursor.execute(f"SELECT datname FROM pg_database WHERE datname = '{db}'")
+        result = cursor.fetchone()
+
+        if not result:
+            # If the database does not exists, create it.
+            sql_create_database = f"CREATE DATABASE {db}"
+            print(f"Database {db} created.")
+        else:
+            print(f"Database {db} already exists.")
+        cursor.execute(sql_create_database)
+
+    except Exception as err:
+        pass
+
+    finally:
+        if con:
+            con.close()
 
 
 print("-----")
@@ -45,12 +61,7 @@ DBSession = sessionmaker(bind=engine)
 
 session = DBSession()
 
-# Встановлення з'єднання з Postgres SQl DB
-try:
-    create_database(domain, port, user, password, db)
-    print(f"Database {db} created.")
-
-except DuplicateDatabase as err:
-    print(f"Database {db} is exists.")
+# Check and create database if necessary.
+create_database(domain, port, user, password, db)
 
 print("-----")
