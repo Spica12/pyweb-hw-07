@@ -1,6 +1,8 @@
 ## Python WEB Homework-07 "ORM SQLAlchemy"
 
-1) У командному рядку запустити Docker контейнер, де замість ```some-postgres```та ```mysecretpassword``` придумати свою назву контейнера та пароль до БД:
+## Завдання
+
+1) Запустити Docker контейнер, де замість ```some-postgres```та ```mysecretpassword``` придумати свою назву контейнера та пароль до БД:
 
 ```
 docker run --name some-postgres -p 5432:5432 -e POSTGRES_PASSWORD=mysecretpassword -d postgres
