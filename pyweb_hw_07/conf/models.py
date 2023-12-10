@@ -6,20 +6,6 @@ from sqlalchemy.ext.hybrid import hybrid_property
 Base = declarative_base()
 
 
-class Student(Base):
-    __tablename__ = "students"
-    id = Column(Integer, primary_key=True)
-    first_name = Column(String(120))
-    last_name = Column(String(120))
-    group_id = Column(
-        Integer, ForeignKey("groups.id", ondelete="CASCADE", onupdate="CASCADE")
-    )
-
-    @hybrid_property
-    def fullname(self):
-        return f"{self.first_name} {self.last_name}"
-
-
 class Group(Base):
     __tablename__ = "groups"
     id = Column(Integer, primary_key=True)
@@ -34,7 +20,7 @@ class Teacher(Base):
 
     @hybrid_property
     def fullname(self):
-        return f"{self.first_name} {self.last_name}"
+        return self.first_name + " " + self.last_name
 
 
 class Subject(Base):
@@ -44,6 +30,20 @@ class Subject(Base):
     teacher_id = Column(
         Integer, ForeignKey("teachers.id", ondelete="CASCADE", onupdate="CASCADE")
     )
+
+
+class Student(Base):
+    __tablename__ = "students"
+    id = Column(Integer, primary_key=True)
+    first_name = Column(String(120))
+    last_name = Column(String(120))
+    group_id = Column(
+        Integer, ForeignKey("groups.id", ondelete="CASCADE", onupdate="CASCADE")
+    )
+
+    @hybrid_property
+    def fullname(self):
+        return self.first_name + " " + self.last_name
 
 
 class Score(Base):
@@ -56,3 +56,4 @@ class Score(Base):
         Integer, ForeignKey("subjects.id", ondelete="CASCADE", onupdate="CASCADE")
     )
     score = Column(Integer)
+    data_of = Column(Date, nullable=False)

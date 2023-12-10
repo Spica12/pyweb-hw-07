@@ -11,7 +11,6 @@ from sqlalchemy.orm import sessionmaker
 def create_database(domain, port, user, password, db):
     con = None
     try:
-
         # Connect to PostgresSQL DBMS
         con = psycopg2.connect(host=domain, port=port, user=user, password=password)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -44,7 +43,14 @@ def create_database(domain, port, user, password, db):
 
 print("-----")
 
-file_config = pathlib.Path(__file__).parent.parent.joinpath("config.ini")
+file_config = (
+    pathlib.Path(__file__)
+    .parent
+    .parent
+    .parent
+    .joinpath("config")
+    .joinpath("config.ini")
+)
 print(f"Config: {file_config}")
 
 config = configparser.ConfigParser()
@@ -57,7 +63,7 @@ port = config.get(section="DEV_DB", option="PORT")
 db = config.get(section="DEV_DB", option="DB_NAME")
 
 
-URI = f"postgresql://{user}:{password}@{domain}/{db}"
+URI = f"postgresql://{user}:{password}@{domain}:{port}/{db}"
 print(URI)
 
 engine = create_engine(URI, echo=False, pool_size=5, max_overflow=0)
