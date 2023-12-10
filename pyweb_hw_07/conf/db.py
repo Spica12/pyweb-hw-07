@@ -5,12 +5,13 @@ import psycopg2
 from psycopg2.errors import DuplicateDatabase
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from sqlalchemy import create_engine, text
-from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker
 
 
 def create_database(domain, port, user, password, db):
+    con = None
     try:
+
         # Connect to PostgresSQL DBMS
         con = psycopg2.connect(host=domain, port=port, user=user, password=password)
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
@@ -18,7 +19,7 @@ def create_database(domain, port, user, password, db):
         # Obtain a DB Cursor
         cursor = con.cursor()
 
-        # Check id database exists
+        # Check if database exists
         cursor.execute(f"SELECT datname FROM pg_database WHERE datname = '{db}'")
         result = cursor.fetchone()
 
@@ -30,8 +31,11 @@ def create_database(domain, port, user, password, db):
             print(f"Database {db} already exists.")
         cursor.execute(sql_create_database)
 
-    except Exception as err:
+    except UnboundLocalError:
         pass
+
+    except Exception as err:
+        print(err)
 
     finally:
         if con:
