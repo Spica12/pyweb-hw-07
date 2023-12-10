@@ -27,7 +27,7 @@ class Group(Base):
 
 
 class Teacher(Base):
-    __tablename__ = "students"
+    __tablename__ = "teachers"
     id = Column(Integer, primary_key=True)
     first_name = Column(String(120))
     last_name = Column(String(120))
@@ -56,5 +56,3 @@ class Score(Base):
         Integer, ForeignKey("subjects.id", ondelete="CASCADE", onupdate="CASCADE")
     )
     score = Column(Integer)
-
-    
