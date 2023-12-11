@@ -19,7 +19,11 @@ python3 main.py --action create -m database
 ```
 alembic upgrade head
 ```
+4) Дізнатись про всі доступні команди необхідно ввести
 
+```
+main.py --help
+```
 
 
 ## Завдання

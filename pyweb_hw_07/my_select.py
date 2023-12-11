@@ -1,7 +1,7 @@
-from conf.db import session
-from conf.models import Student, Teacher, Group, Subject, Score
+from sqlalchemy import and_, desc, func, or_
 
-from sqlalchemy import func, desc, and_, or_
+from conf.db import session
+from conf.models import Group, Score, Student, Subject, Teacher
 
 
 def read_all_students():

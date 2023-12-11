@@ -1,6 +1,5 @@
-import sys
 import os
-
+import sys
 
 # Отримати шлях до поточного каталогу (де розташований поточний файл)
 current_dir = os.path.dirname(__file__)
@@ -13,13 +12,12 @@ sys.path.append(root_dir)
 
 
 import random
+
 from faker import Faker
-
-from conf.models import Student, Group, Teacher, Subject, Score
-from conf.db import session
-
 from sqlalchemy.exc import SQLAlchemyError
 
+from conf.db import session
+from conf.models import Group, Score, Student, Subject, Teacher
 
 NUMBER_STUDENTS = 50
 NUMBER_GROUPS = 3

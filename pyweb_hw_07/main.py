@@ -1,123 +1,13 @@
 import argparse
 
 from conf.db import create_database, drop_database
+from crud import (create_group, create_score, create_student, create_subject,
+                  create_teacher, delete_group, delete_score, delete_student,
+                  delete_subject, delete_teacher, update_group, update_score,
+                  update_student, update_subject, update_teacher)
+from my_select import (main_select, read_all_groups, read_all_scores,
+                       read_all_students, read_all_subjects, read_all_teachers)
 from seeds.init import init_random_data
-from my_select import (
-    main_select,
-    read_all_students,
-    read_all_teachers,
-    read_all_groups,
-    read_all_subjects,
-    read_all_scores,
-)
-from crud import (
-    create_student,
-    create_teacher,
-    create_group,
-    create_subject,
-    create_score,
-    update_student,
-    update_teacher,
-    update_group,
-    update_subject,
-    update_score,
-    delete_student,
-    delete_teacher,
-    delete_group,
-    delete_subject,
-    delete_score,
-)
-
-
-# def get_help():
-#     message = (
-#         "\nAll supported command in this app:\n",
-#         "--action create --model database       - create new database",
-#         "--action create --model student        - add new student into database",
-#         "--action create --model teacher        - add new teacher into database",
-#         "--action create --model group          - add new group into database",
-#         "--action create --model subject        - add new subject into database",
-#         "--action create --model score          - add new score into database",
-#         "--action read --model student          - read all students from database",
-#         "--action read --model teacher          - read all teachers from database",
-#         "--action read --model group            - read all groups from database",
-#         "--action read --model subject          - read all subjects from database",
-#         "--action read --model score            - read all scores from database",
-#         "--action update --model student        - update record student in database",
-#         "--action update --model teacher        - update record in database",
-#         "--action update --model group          - update record group in database",
-#         "--action update --model subject        - update record subject in database",
-#         "--action update --model score          - update record score in database",
-#         "--action delete -model database        - drop exist database",
-#         "--action delete --model student        - delete student from database",
-#         "--action delete --model teacher        - delete teacher from database",
-#         "--action delete --model group          - delete group from database",
-#         "--action delete --model subject        - delete subject from database",
-#         "--action delete --model score          - delete score from database",
-#         "--action random                        - insert random data to database",
-#         "--select 1                             - Знайти 5 студентів із найбільшим середнім балом з усіх предметів.",
-#         "--select 2                             - Знайти студента із найвищим середнім балом з певного предмета.",
-#         "--select 3                             - Знайти середній бал у групах з певного предмета.",
-#         "--select 4                             - Знайти середній бал на потоці (по всій таблиці оцінок).",
-#         "--select 5                             - Знайти які курси читає певний викладач.",
-#         "--select 6                             - Знайти список студентів у певній групі.",
-#         "--select 7                             - Знайти оцінки студентів у окремій групі з певного предмета.",
-#         "--select 8                             - Знайти середній бал, який ставить певний викладач зі своїх предметів.",
-#         "--select 9                             - Знайти список курсів, які відвідує певний студент.",
-#         "--select 10                            - Список курсів, які певному студенту читає певний викладач.",
-#         "--select 11                            - Додатковий. Середній бал, який певний викладач ставить певному студентові.",
-#         "--select 12                            - Додатковий. Оцінки студентів у певній групі з певного предмета на останньому занятті.",
-#     )
-
-#     for row in message:
-#         print(row)
-
-
-def get_help_action():
-    message = (
-        "All supported command:",
-        "--action create --model database       - create new database",
-        "--action create --model student        - add new student into database",
-        "--action create --model teacher        - add new teacher into database",
-        "--action create --model group          - add new group into database",
-        "--action create --model subject        - add new subject into database",
-        "--action create --model score          - add new score into database",
-        "--action read --model student          - read all students from database",
-        "--action read --model teacher          - read all teachers from database",
-        "--action read --model group            - read all groups from database",
-        "--action read --model subject          - read all subjects from database",
-        "--action read --model score            - read all scores from database",
-        "--action update --model student        - update record student in database",
-        "--action update --model teacher        - update record in database",
-        "--action update --model group          - update record group in database",
-        "--action update --model subject        - update record subject in database",
-        "--action update --model score          - update record score in database",
-        "--action delete -model database        - drop exist database",
-        "--action delete --model student        - delete student from database",
-        "--action delete --model teacher        - delete teacher from database",
-        "--action delete --model group          - delete group from database",
-        "--action delete --model subject        - delete subject from database",
-        "--action delete --model score          - delete score from database",
-        "--action random                        - insert random data to database",
-        "--select 1                             - Знайти 5 студентів із найбільшим середнім балом з усіх предметів.",
-        "--select 2                             - Знайти студента із найвищим середнім балом з певного предмета.",
-        "--select 3                             - Знайти середній бал у групах з певного предмета.",
-        "--select 4                             - Знайти середній бал на потоці (по всій таблиці оцінок).",
-        "--select 5                             - Знайти які курси читає певний викладач.",
-        "--select 6                             - Знайти список студентів у певній групі.",
-        "--select 7                             - Знайти оцінки студентів у окремій групі з певного предмета.",
-        "--select 8                             - Знайти середній бал, який ставить певний викладач зі своїх предметів.",
-        "--select 9                             - Знайти список курсів, які відвідує певний студент.",
-        "--select 10                            - Список курсів, які певному студенту читає певний викладач.",
-        "--select 11                            - Додатковий. Середній бал, який певний викладач ставить певному студентові.",
-        "--select 12                            - Додатковий. Оцінки студентів у певній групі з певного предмета на останньому занятті.",
-    )
-    output = ""
-    for row in message:
-        output += row + "\n"
-
-    return output
-
 
 parser = argparse.ArgumentParser(
     description="All supported command:\n"
@@ -145,8 +35,7 @@ parser = argparse.ArgumentParser(
     "--action delete --model score          - delete score from database\n"
     "\n"
     "ATTENTION: After created new database need to enter 'alembic upgrade head'",
-    formatter_class=argparse.RawTextHelpFormatter
-
+    formatter_class=argparse.RawTextHelpFormatter,
 )
 
 parser.add_argument("--action", "-a")

@@ -1,16 +1,10 @@
-from conf.db import session
-from conf.models import Student, Teacher, Group, Subject, Score
-
-from my_select import (
-    choose_group,
-    choose_student,
-    choose_subject,
-    choose_teacher,
-    choose_scores,
-)
-
-from datetime import datetime
 import calendar
+from datetime import datetime
+
+from conf.db import session
+from conf.models import Group, Score, Student, Subject, Teacher
+from my_select import (choose_group, choose_scores, choose_student,
+                       choose_subject, choose_teacher)
 
 
 def user_input(field):
