@@ -396,13 +396,13 @@ def select_12():
         .all()
     )
     result = []
-    columns = ["date", "group", "subject", "student", "score"]
+    columns = ["date", "student", "score"]
     for g in response:
         r = [
             dict(
                 zip(
                     columns,
-                    (g.last_date, g.group_name, g.student, g.subject_name, g.score),
+                    (g.last_date, g.student, g.score),
                 )
             )
         ]
