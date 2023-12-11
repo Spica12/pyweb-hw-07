@@ -1,43 +1,89 @@
 from conf.db import session
 from conf.models import Student, Teacher, Group, Subject, Score
 
-from sqlalchemy import func, desc, and_
+from sqlalchemy import func, desc, and_, or_
 
 
-def choose_student():
-    students = session.query(Student).all()
-
+def read_all_students():
+    students = session.query(Student).order_by(Student.id).all()
     for student in students:
         print(f"{student.id}. {student.fullname}")
 
+
+def read_all_teachers():
+    teachers = session.query(Teacher).order_by(Teacher.id).all()
+    for teachers in teachers:
+        print(f"{teachers.id}. {teachers.fullname}")
+
+
+def read_all_groups():
+    groups = session.query(Group).order_by(Group.id).all()
+    for group in groups:
+        print(f"{group.id}. {group.group_name}")
+
+
+def read_all_subjects():
+    subjects = session.query(Subject).order_by(Subject.id).all()
+    for subject in subjects:
+        print(f"{subject.id}. {subject.subject_name}")
+
+
+def read_all_scores(student_id=None, subject_id=None):
+    response = (
+        session.query(
+            Score.id,
+            Student.fullname,
+            Subject.subject_name,
+            Score.score,
+            Score.data_of,
+        )
+        .select_from(Score)
+        .join(Student)
+        .join(Subject)
+        .group_by(
+            Score.id, Student.fullname, Subject.subject_name, Score.score, Score.data_of
+        )
+        .order_by(Score.id)
+        .filter(
+            or_(
+                student_id is None,
+                Student.id == student_id,
+            ),
+        )
+        .all()
+    )
+    columns = ["id", "student", "subject", "score", "data"]
+    for q in response:
+        s = [dict(zip(columns, (q.id, q.fullname, q.subject_name, q.score, q.data_of)))]
+        print(s)
+
+
+def choose_student():
+    read_all_students()
     return int(input("\nChoose number of student: \n>>> "))
 
 
 def choose_teacher():
-    teachers = session.query(Teacher).all()
-
-    for teacher in teachers:
-        print(f"{teacher.id}. {teacher.fullname}")
-
+    read_all_teachers()
     return int(input("\nChoose number of teacher: \n>>> "))
 
 
 def choose_group():
-    groups = session.query(Group).all()
-
-    for group in groups:
-        print(f"{group.id}. {group.group_name}")
-
+    read_all_groups()
     return int(input("\nChoose number of group: \n>>> "))
 
 
 def choose_subject():
-    subjects = session.query(Subject).all()
-
-    for subject in subjects:
-        print(f"{subject.id}. {subject.subject_name}")
-
+    read_all_subjects()
     return int(input("\nChoose number of subject: \n>>> "))
+
+
+def choose_scores():
+    student_id = choose_student()
+
+    read_all_scores(student_id)
+
+    return int(input("\nChoose number of score: \n>>> "))
 
 
 def select_1():
