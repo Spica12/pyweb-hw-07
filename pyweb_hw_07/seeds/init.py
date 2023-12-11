@@ -60,11 +60,13 @@ def insert_groups():
 
 
 def insert_students():
+    groups = session.query(Group).all()
+
     for _ in range(NUMBER_STUDENTS):
         student = Student(
             first_name=fake.first_name(),
             last_name=fake.last_name(),
-            group_id=random.randint(1, NUMBER_GROUPS),
+            group_id=random.choice(groups).id,
         )
         session.add(student)
 
@@ -83,10 +85,12 @@ def insert_teacher():
 
 
 def insert_subject():
+    teachers = session.query(Teacher).all()
+
     for _ in range(NUMBER_SUBJECTS):
         subject = Subject(
             subject_name=random.choice(SUBJECTS),
-            teacher_id=random.randint(1, NUMBER_TEACHERS),
+            teacher_id=random.choice(teachers).id,
         )
         session.add(subject)
 
@@ -109,19 +113,19 @@ def insert_scores():
         print(f"Added score for {student.fullname}.")
 
 
-if __name__ == "__main__":
+def init_random_data():
     try:
         # Добавляємо рандомно групи
-        # insert_groups()
+        insert_groups()
 
         # Добавляємо рандомно студентів
-        # insert_students()
+        insert_students()
 
         # Добавляємо рандомно вчителя
-        # insert_teacher()
+        insert_teacher()
 
         # Добавляємо рандомно предмет
-        # insert_subject()
+        insert_subject()
 
         # Добавляємо рандомно оцінки для кожного студента
         insert_scores()
@@ -135,3 +139,9 @@ if __name__ == "__main__":
         session.commit()
         print("Data was saved into database")
         session.close()
+
+
+if __name__ == "__main__":
+    # init_random_data()
+
+    pass

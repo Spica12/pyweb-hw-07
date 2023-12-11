@@ -8,7 +8,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
 
-def create_database(domain, port, user, password, db):
+def create_database():
     con = None
     try:
         # Connect to PostgresSQL DBMS
@@ -41,14 +41,44 @@ def create_database(domain, port, user, password, db):
             con.close()
 
 
+def drop_database():
+    con = None
+    try:
+        # Connect to PostgresSQL DBMS
+        con = psycopg2.connect(host=domain, port=port, user=user, password=password)
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+        # Obtain a DB Cursor
+        cursor = con.cursor()
+
+        # Check if database exists
+        cursor.execute(f"SELECT datname FROM pg_database WHERE datname = '{db}'")
+        result = cursor.fetchone()
+
+        if result:
+            # If the database exists, drop it.
+            sql_create_database = f"DROP DATABASE {db}"
+            print(f"Database {db} dropped.")
+        else:
+            print(f"Database {db} does not exist.")
+        cursor.execute(sql_create_database)
+
+    except UnboundLocalError:
+        pass
+
+    except Exception as err:
+        print(err)
+
+    finally:
+        if con:
+            con.close()
+
+
 print("-----")
 
 file_config = (
     pathlib.Path(__file__)
-    .parent
-    .parent
-    .parent
-    .joinpath("config")
+    .parent.parent.parent.joinpath("config")
     .joinpath("config.ini")
 )
 print(f"Config: {file_config}")
@@ -71,7 +101,10 @@ DBSession = sessionmaker(bind=engine)
 
 session = DBSession()
 
-# Check and create database if necessary.
-create_database(domain, port, user, password, db)
 
 print("-----")
+
+
+if __name__ == "__main__":
+    # drop_database()
+    pass
