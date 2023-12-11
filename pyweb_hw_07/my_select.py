@@ -10,7 +10,7 @@ def choose_student():
     for student in students:
         print(f"{student.id}. {student.fullname}")
 
-    return int(input("Choose number of student: \n>>> "))
+    return int(input("\nChoose number of student: \n>>> "))
 
 
 def choose_teacher():
@@ -19,7 +19,7 @@ def choose_teacher():
     for teacher in teachers:
         print(f"{teacher.id}. {teacher.fullname}")
 
-    return int(input("Choose number of teacher: \n>>> "))
+    return int(input("\nChoose number of teacher: \n>>> "))
 
 
 def choose_group():
@@ -28,7 +28,7 @@ def choose_group():
     for group in groups:
         print(f"{group.id}. {group.group_name}")
 
-    return int(input("Choose number of group: \n>>> "))
+    return int(input("\nChoose number of group: \n>>> "))
 
 
 def choose_subject():
@@ -37,7 +37,7 @@ def choose_subject():
     for subject in subjects:
         print(f"{subject.id}. {subject.subject_name}")
 
-    return int(input("Choose number of subject: \n>>> "))
+    return int(input("\nChoose number of subject: \n>>> "))
 
 
 def select_1():
@@ -295,6 +295,44 @@ def select_9():
     return result
 
 
+def select_10():
+    print(
+        "--- Select 10 ---\nСписок курсів, які певному студенту читає певний викладач."
+    )
+
+    num_teacher = choose_teacher()
+    num_student = choose_student()
+
+    response = (
+        session.query(
+            Teacher.fullname.label("teacher"),
+            Student.fullname.label("student"),
+            Subject.subject_name,
+        )
+        .select_from(Score)
+        .join(Student)
+        .join(Subject)
+        .join(Teacher)
+        .group_by(Teacher.fullname, Student.fullname, Subject.subject_name)
+        .filter(and_(Teacher.id == num_teacher, Student.id == num_student))
+        .all()
+    )
+    result = []
+    columns = ["teacher", "subject", "student"]
+    for g in response:
+        r = [
+            dict(
+                zip(
+                    columns,
+                    (g.teacher, g.subject_name, g.student),
+                )
+            )
+        ]
+        result.append(r)
+
+    return result
+
+
 def choose_select(number):
     match number:
         case "1":
@@ -316,7 +354,7 @@ def choose_select(number):
         case "9":
             return select_9()
         case "10":
-            pass
+            return select_10()
         case "11":
             pass
         case "12":
