@@ -3,6 +3,13 @@ import argparse
 from conf.db import create_database, drop_database
 from seeds.init import init_random_data
 from my_select import main_select
+from crud import (
+    create_student,
+    create_teacher,
+    create_group,
+    create_subject,
+    create_score,
+)
 
 parser = argparse.ArgumentParser(description="Student&Teacher&Score")
 
@@ -27,6 +34,18 @@ def parse_create_argument():
     match model.lower():
         case "database":
             create_database()
+        case "student":
+            create_student()
+        case "teacher":
+            create_teacher()
+        case "group":
+            create_group()
+        case "subject":
+            create_subject()
+        case "score":
+            create_score()
+        case _:
+            print("Enter correct arguments")
 
 
 def parse_read_argument():
@@ -50,7 +69,8 @@ def parse_delete_argument():
 def get_help():
     message = (
         "\nAll supported command in this app:",
-        "--action create -model database        - create new database",
+        "--action create --model database       - create new database",
+        "--action create --model student        - add new student into database",
         "--action drop -model database          - drop exist database",
         "--action random                        - insert random data to database",
         "--select 1                             - Знайти 5 студентів із найбільшим середнім балом з усіх предметів.",

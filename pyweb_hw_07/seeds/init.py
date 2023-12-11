@@ -87,9 +87,11 @@ def insert_teacher():
 def insert_subject():
     teachers = session.query(Teacher).all()
 
-    for _ in range(NUMBER_SUBJECTS):
+    choose_subjects = random.sample(SUBJECTS, k=NUMBER_SUBJECTS)
+
+    for name_subject in choose_subjects:
         subject = Subject(
-            subject_name=random.choice(SUBJECTS),
+            subject_name=name_subject,
             teacher_id=random.choice(teachers).id,
         )
         session.add(subject)
