@@ -122,6 +122,25 @@ def select_3():
     return result
 
 
+def select_4():
+    print("--- Select 4 ---\nЗнайти середній бал на потоці (по всій таблиці оцінок).")
+
+    response = (
+        session.query(
+            func.round(func.avg(Score.score), 2).label("avg_score"),
+        )
+        .select_from(Score)
+        .all()
+    )
+    result = []
+    columns = ["avg_score"]
+    for g in response:
+        r = [dict(zip(columns, (g.avg_score, )))]
+        result.append(r)
+
+    return result
+
+
 def choose_select(number):
     match number:
         case "1":
@@ -130,6 +149,24 @@ def choose_select(number):
             result = select_2()
         case "3":
             result = select_3()
+        case "4":
+            result = select_4()
+        case "5":
+            pass
+        case "6":
+            pass
+        case "7":
+            pass
+        case "8":
+            pass
+        case "9":
+            pass
+        case "10":
+            pass
+        case "11":
+            pass
+        case "12":
+            pass
         case _:
             pass
 
