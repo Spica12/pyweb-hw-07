@@ -1,12 +1,49 @@
 from conf.db import session
 from conf.models import Student, Teacher, Group, Subject, Score
 
-from sqlalchemy import func, desc
+from sqlalchemy import func, desc, and_
 
-from pprint import pprint
+
+def choose_student():
+    students = session.query(Student).all()
+
+    for student in students:
+        print(f"{student.id}. {student.fullname}")
+
+    return input("Choose number of student: \n>>> ")
+
+
+def choose_teacher():
+    teachers = session.query(Teacher).all()
+
+    for teacher in teachers:
+        print(f"{teacher.id}. {teacher.fullname}")
+
+    return input("Choose number of teacher: \n>>> ")
+
+
+def choose_group():
+    groups = session.query(Group).all()
+
+    for group in groups:
+        print(f"{group.id}. {group.group_name}")
+
+    return input("Choose number of group: \n>>> ")
+
+
+def choose_subject():
+    subjects = session.query(Subject).all()
+
+    for subject in subjects:
+        print(f"{subject.id}. {subject.subject_name}")
+
+    return int(input("Choose number of subject: \n>>> "))
 
 
 def select_1():
+    print(
+        "--- Select 1 ---\nЗнайти 5 студентів із найбільшим середнім балом з усіх предметів."
+    )
     students = []
 
     result = (
@@ -29,7 +66,62 @@ def select_1():
     return students
 
 
+def select_2():
+    print(
+        "--- Select 2 ---\nЗнайти студента із найвищим середнім балом з певного предмета."
+    )
+    num_subject = choose_subject()
+
+    students = (
+        session.query(
+            Student.id,
+            Subject.subject_name,
+            Student.fullname,
+            func.round(func.avg(Score.score), 2).label("avg_score"),
+        )
+        .select_from(Score)
+        .join(Student)
+        .join(Subject)
+        .group_by(Subject.subject_name, Student.id)
+        .order_by(desc("avg_score"))
+        .filter(Subject.id == num_subject)
+        .limit(1)
+    )
+    for s in students:
+        columns = ["subject", "id", "student", "avg_score"]
+        student = [
+            dict(
+                zip(
+                    columns,
+                    (s.subject_name, s.id, s.fullname, s.avg_score),
+                )
+            )
+        ]
+
+    return student
+
+
+def choose_select(number):
+    match number:
+        case "1":
+            result = select_1()
+        case "2":
+            result = select_2()
+        case _:
+            pass
+
+    return result
+
+
+def main_select(number):
+    result = choose_select(number)
+
+    if result:
+        for row in result:
+            print(row)
+    else:
+        print("Something wrong")
+
+
 if __name__ == "__main__":
-    print("--- Select 1 ---")
-    result = select_1()
-    pprint(result)
+    main_select(1)

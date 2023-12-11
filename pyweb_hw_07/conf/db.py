@@ -74,7 +74,7 @@ def drop_database():
             con.close()
 
 
-print("-----")
+print("--- Postgres DB ---")
 
 file_config = (
     pathlib.Path(__file__)
@@ -100,9 +100,6 @@ engine = create_engine(URI, echo=False, pool_size=5, max_overflow=0)
 DBSession = sessionmaker(bind=engine)
 
 session = DBSession()
-
-
-print("-----")
 
 
 if __name__ == "__main__":
