@@ -227,6 +227,41 @@ def select_7():
     return result
 
 
+def select_8():
+    print(
+        "--- Select 8 ---\nЗнайти середній бал, який ставить певний викладач зі своїх предметів."
+    )
+    num_teacher = choose_teacher()
+
+    response = (
+        session.query(
+            Teacher.fullname,
+            Subject.subject_name,
+            func.round(func.avg(Score.score), 2).label("avg_score"),
+        )
+        .select_from(Score)
+        .join(Subject)
+        .join(Teacher)
+        .group_by(Teacher.fullname, Subject.subject_name)
+        .filter(Teacher.id == num_teacher)
+        .all()
+    )
+    result = []
+    columns = ["teacher", "subject", "avg_score"]
+    for g in response:
+        r = [
+            dict(
+                zip(
+                    columns,
+                    (g.fullname, g.subject_name, g.avg_score),
+                )
+            )
+        ]
+        result.append(r)
+
+    return result
+
+
 def choose_select(number):
     match number:
         case "1":
@@ -244,7 +279,7 @@ def choose_select(number):
         case "7":
             return select_7()
         case "8":
-            pass
+            return select_8()
         case "9":
             pass
         case "10":
