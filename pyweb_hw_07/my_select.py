@@ -371,6 +371,46 @@ def select_11():
     return result
 
 
+def select_12():
+    print(
+        "--- Select 11 ---\nДодатковий. Оцінки студентів у певній групі з певного предмета на останньому занятті."
+    )
+
+    num_group = choose_group()
+    num_subject = choose_subject()
+
+    response = (
+        session.query(
+            func.max(Score.data_of).label("last_date"),
+            Group.group_name,
+            Student.fullname.label("student"),
+            Subject.subject_name,
+            Score.score,
+        )
+        .select_from(Score)
+        .join(Student)
+        .join(Subject)
+        .join(Group)
+        .group_by(Group.group_name, Subject.subject_name, Student.fullname, Score.score)
+        .filter(and_(Group.id == num_group, Subject.id == num_subject))
+        .all()
+    )
+    result = []
+    columns = ["date", "group", "subject", "student", "score"]
+    for g in response:
+        r = [
+            dict(
+                zip(
+                    columns,
+                    (g.last_date, g.group_name, g.student, g.subject_name, g.score),
+                )
+            )
+        ]
+        result.append(r)
+
+    return result
+
+
 def choose_select(number):
     match number:
         case "1":
@@ -396,7 +436,7 @@ def choose_select(number):
         case "11":
             return select_11()
         case "12":
-            pass
+            return select_12()
         case _:
             pass
 
