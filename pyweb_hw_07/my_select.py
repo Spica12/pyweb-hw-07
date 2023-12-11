@@ -262,6 +262,39 @@ def select_8():
     return result
 
 
+def select_9():
+    print("--- Select 9 ---\nЗнайти список курсів, які відвідує певний студент.")
+
+    num_student = choose_student()
+
+    response = (
+        session.query(
+            Student.fullname,
+            Subject.subject_name,
+        )
+        .select_from(Score)
+        .join(Subject)
+        .join(Student)
+        .group_by(Student.fullname, Subject.subject_name)
+        .filter(Student.id == num_student)
+        .all()
+    )
+    result = []
+    columns = ["student", "subject"]
+    for g in response:
+        r = [
+            dict(
+                zip(
+                    columns,
+                    (g.fullname, g.subject_name),
+                )
+            )
+        ]
+        result.append(r)
+
+    return result
+
+
 def choose_select(number):
     match number:
         case "1":
@@ -281,7 +314,7 @@ def choose_select(number):
         case "8":
             return select_8()
         case "9":
-            pass
+            return select_9()
         case "10":
             pass
         case "11":
