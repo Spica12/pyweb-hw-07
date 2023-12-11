@@ -183,7 +183,45 @@ def select_6():
     result = []
     columns = ["group", "student"]
     for g in response:
-        r = [dict(zip(columns, (g.group_name, g.fullname,)))]
+        r = [dict(zip(columns, (g.group_name, g.fullname)))]
+        result.append(r)
+
+    return result
+
+
+def select_7():
+    print(
+        "--- Select 7 ---\nЗнайти оцінки студентів у окремій групі з певного предмета."
+    )
+    num_subject = choose_subject()
+    num_group = choose_group()
+
+    response = (
+        session.query(
+            Subject.subject_name,
+            Group.group_name,
+            Student.fullname,
+            Score.score,
+        )
+        .select_from(Score)
+        .join(Subject)
+        .join(Student)
+        .join(Group)
+        .group_by(Subject.subject_name, Group.group_name, Student.fullname, Score.score)
+        .filter(and_(Subject.id == num_subject, Group.id == num_group))
+        .all()
+    )
+    result = []
+    columns = ["subject", "group", "student", "score"]
+    for g in response:
+        r = [
+            dict(
+                zip(
+                    columns,
+                    (g.subject_name, g.group_name, g.fullname, g.score),
+                )
+            )
+        ]
         result.append(r)
 
     return result
@@ -204,7 +242,7 @@ def choose_select(number):
         case "6":
             return select_6()
         case "7":
-            pass
+            return select_7()
         case "8":
             pass
         case "9":
