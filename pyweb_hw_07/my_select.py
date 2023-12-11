@@ -333,6 +333,44 @@ def select_10():
     return result
 
 
+def select_11():
+    print(
+        "--- Select 11 ---\nДодатковий. Середній бал, який певний викладач ставить певному студентові."
+    )
+
+    num_teacher = choose_teacher()
+    num_student = choose_student()
+
+    response = (
+        session.query(
+            Teacher.fullname.label("teacher"),
+            Student.fullname.label("student"),
+            func.round(func.avg(Score.score), 2).label("avg_score"),
+        )
+        .select_from(Score)
+        .join(Student)
+        .join(Subject)
+        .join(Teacher)
+        .group_by(Teacher.fullname, Student.fullname)
+        .filter(and_(Teacher.id == num_teacher, Student.id == num_student))
+        .all()
+    )
+    result = []
+    columns = ["teacher", "subject", "avg_score"]
+    for g in response:
+        r = [
+            dict(
+                zip(
+                    columns,
+                    (g.teacher, g.student, g.avg_score),
+                )
+            )
+        ]
+        result.append(r)
+
+    return result
+
+
 def choose_select(number):
     match number:
         case "1":
@@ -356,7 +394,7 @@ def choose_select(number):
         case "10":
             return select_10()
         case "11":
-            pass
+            return select_11()
         case "12":
             pass
         case _:
