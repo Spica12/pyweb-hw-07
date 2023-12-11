@@ -165,6 +165,30 @@ def select_5():
     return result
 
 
+def select_6():
+    print("--- Select 6 ---\nЗнайти список студентів у певній групі.")
+    num_group = choose_group()
+
+    response = (
+        session.query(
+            Group.group_name,
+            Student.fullname,
+        )
+        .select_from(Student)
+        .join(Group)
+        .group_by(Group.group_name, Student.fullname)
+        .filter(Group.id == num_group)
+        .all()
+    )
+    result = []
+    columns = ["group", "student"]
+    for g in response:
+        r = [dict(zip(columns, (g.group_name, g.fullname,)))]
+        result.append(r)
+
+    return result
+
+
 def choose_select(number):
     match number:
         case "1":
@@ -178,7 +202,7 @@ def choose_select(number):
         case "5":
             return select_5()
         case "6":
-            pass
+            return select_6()
         case "7":
             pass
         case "8":
