@@ -10,7 +10,7 @@ def choose_student():
     for student in students:
         print(f"{student.id}. {student.fullname}")
 
-    return input("Choose number of student: \n>>> ")
+    return int(input("Choose number of student: \n>>> "))
 
 
 def choose_teacher():
@@ -19,7 +19,7 @@ def choose_teacher():
     for teacher in teachers:
         print(f"{teacher.id}. {teacher.fullname}")
 
-    return input("Choose number of teacher: \n>>> ")
+    return int(input("Choose number of teacher: \n>>> "))
 
 
 def choose_group():
@@ -28,7 +28,7 @@ def choose_group():
     for group in groups:
         print(f"{group.id}. {group.group_name}")
 
-    return input("Choose number of group: \n>>> ")
+    return int(input("Choose number of group: \n>>> "))
 
 
 def choose_subject():
@@ -89,16 +89,37 @@ def select_2():
     )
     for s in students:
         columns = ["subject", "id", "student", "avg_score"]
-        student = [
-            dict(
-                zip(
-                    columns,
-                    (s.subject_name, s.id, s.fullname, s.avg_score),
-                )
-            )
-        ]
+        student = [dict(zip(columns, (s.subject_name, s.id, s.fullname, s.avg_score)))]
 
     return student
+
+
+def select_3():
+    print("--- Select 3 ---\nЗнайти середній бал у групах з певного предмета.")
+    num_subject = choose_subject()
+
+    response = (
+        session.query(
+            Subject.subject_name,
+            Group.group_name,
+            func.round(func.avg(Score.score), 2).label("avg_score"),
+        )
+        .select_from(Score)
+        .join(Student)
+        .join(Subject)
+        .join(Group)
+        .group_by(Subject.subject_name, Group.group_name)
+        .order_by(desc("avg_score"))
+        .filter(Subject.id == num_subject)
+        .all()
+    )
+    result = []
+    columns = ["subject", "group", "avg_score"]
+    for g in response:
+        r = [dict(zip(columns, (g.subject_name, g.group_name, g.avg_score)))]
+        result.append(r)
+
+    return result
 
 
 def choose_select(number):
@@ -107,6 +128,8 @@ def choose_select(number):
             result = select_1()
         case "2":
             result = select_2()
+        case "3":
+            result = select_3()
         case _:
             pass
 
