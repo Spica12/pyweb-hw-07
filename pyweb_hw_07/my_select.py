@@ -135,7 +135,31 @@ def select_4():
     result = []
     columns = ["avg_score"]
     for g in response:
-        r = [dict(zip(columns, (g.avg_score, )))]
+        r = [dict(zip(columns, (g.avg_score,)))]
+        result.append(r)
+
+    return result
+
+
+def select_5():
+    print("--- Select 5 ---\nЗнайти які курси читає певний викладач.")
+    num_teacher = choose_teacher()
+
+    response = (
+        session.query(
+            Teacher.fullname,
+            Subject.subject_name,
+        )
+        .select_from(Subject)
+        .join(Teacher)
+        .group_by(Teacher.fullname, Subject.subject_name)
+        .filter(Teacher.id == num_teacher)
+        .all()
+    )
+    result = []
+    columns = ["teacher", "subject"]
+    for g in response:
+        r = [dict(zip(columns, (g.fullname, g.subject_name)))]
         result.append(r)
 
     return result
@@ -144,15 +168,15 @@ def select_4():
 def choose_select(number):
     match number:
         case "1":
-            result = select_1()
+            return select_1()
         case "2":
-            result = select_2()
+            return select_2()
         case "3":
-            result = select_3()
+            return select_3()
         case "4":
-            result = select_4()
+            return select_4()
         case "5":
-            pass
+            return select_5()
         case "6":
             pass
         case "7":
@@ -169,8 +193,6 @@ def choose_select(number):
             pass
         case _:
             pass
-
-    return result
 
 
 def main_select(number):
